@@ -1,5 +1,5 @@
 MODULE MOD
-  USE UTILS
+  USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: IOSTAT_END
   IMPLICIT NONE
 
   CHARACTER*(*), PARAMETER :: fin = "test01.txt"
@@ -15,7 +15,7 @@ SUBROUTINE PART1()
 
   DO
      READ(10, "(A)", IOSTAT=ios) l
-     IF (ios.EQ.-1) EXIT
+     IF (ios.EQ.IOSTAT_END) EXIT
 
      WRITE(6,*) l
   END DO
