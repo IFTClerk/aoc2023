@@ -2,15 +2,17 @@ MODULE MOD
   USE UTILS
   IMPLICIT NONE
 
+  INTEGER, PARAMETER :: long = SELECTED_INT_KIND(16)
   ! CHARACTER*(*), PARAMETER :: fin = "test01.txt"
   ! CHARACTER*(*), PARAMETER :: fin = "test02.txt"
-  CHARACTER*(*), PARAMETER :: fin = "input.txt"
+  ! CHARACTER*(*), PARAMETER :: fin = "input.txt"
+  CHARACTER*(*), PARAMETER :: fin = "Hxtu.txt"
 CONTAINS
 
 SUBROUTINE MAKESCHEM(scm, nr, nc)
   IMPLICIT NONE
   CHARACTER, DIMENSION(:,:), ALLOCATABLE :: scm
-  CHARACTER*256 l
+  CHARACTER*8192 l
   INTEGER ios, nr, nc, nl
 
   OPEN(UNIT=50, FILE=fin, STATUS='old')
@@ -134,9 +136,10 @@ SUBROUTINE PART2()
   CHARACTER c
   CHARACTER*64 b
   INTEGER nr, nc
-  INTEGER ios, sum, t, s
+  INTEGER ios, t, s
   INTEGER ni, nj, nn, nii, njj
   INTEGER nf, nb, nk
+  INTEGER(KIND=long) :: sum
 
   sum = 0
 
@@ -179,7 +182,7 @@ SUBROUTINE PART2()
                  END IF
               END DO
            END DO
-           WRITE(6,*) s
+           ! WRITE(6,*) s
            sum = sum + s
         END IF
      END DO
