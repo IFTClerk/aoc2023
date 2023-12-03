@@ -2,7 +2,9 @@ MODULE MOD
   USE, INTRINSIC :: ISO_FORTRAN_ENV, ONLY: IOSTAT_END
   IMPLICIT NONE
 
-  CHARACTER*(*), PARAMETER :: fin = "test01.txt"
+  ! CHARACTER*(*), PARAMETER :: fin = "test01.txt"
+  ! CHARACTER*(*), PARAMETER :: fin = "test02.txt"
+  ! CHARACTER*(*), PARAMETER :: fin = "input.txt"
 CONTAINS
 
 SUBROUTINE PART1()
@@ -22,8 +24,9 @@ SUBROUTINE PART1()
 
   CLOSE(10)
 
+  WRITE(6,*) "-----------------"
   WRITE(6,*) "Part 1", sum
-  WRITE(6,*)
+  WRITE(6,*) "-----------------"
 END SUBROUTINE PART1
 
 END MODULE MOD

@@ -7,4 +7,4 @@ flags="-Wall -Wextra -fcheck=bounds"
 # Build the binary
 #$fc --version
 
-$fc -o main main.f* $flags
+$fc -o main ../utils.f* main.f* $flags
