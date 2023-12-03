@@ -2,7 +2,7 @@
 
 # Compiler and flags
 fc=gfortran
-flags="-Wall -Wextra -fcheck=bounds"
+flags="-Wall -Wextra -Wno-unused-variable -fcheck=bounds"
 
 # Build the binary
 #$fc --version
