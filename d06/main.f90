@@ -57,7 +57,6 @@ SUBROUTINE PART2()
   ALLOCATE(thold(tmax))
   thold = [(i, i=1,tmax)]
   s = s * COUNT(((tmax-thold)*thold).GT.dmin)
-  DEALLOCATE(thold)
 
   WRITE(6,*) "-----------------"
   WRITE(6,*) "Part 2", s
