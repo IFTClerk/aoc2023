@@ -2,7 +2,7 @@
 
 # Compiler and flags
 fc=gfortran
-flags="-Wall -Wextra -Wno-unused-variable -fcheck=bounds"
+flags="-Wall -Wextra -Wno-unused-variable -Wno-maybe-uninitialized -fcheck=bounds"
 # flags="${flags} -fno-range-check"
 
 # echo "$flags"
