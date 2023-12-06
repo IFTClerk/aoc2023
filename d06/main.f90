@@ -42,7 +42,6 @@ END SUBROUTINE PART1
 
 SUBROUTINE PART2()
   IMPLICIT NONE
-  CHARACTER(LEN=10) gbg
   INTEGER(KIND=INT64), DIMENSION(:), ALLOCATABLE :: thold
   INTEGER s
   INTEGER(KIND=INT64) i, tmax, dmin
@@ -50,8 +49,8 @@ SUBROUTINE PART2()
   OPEN(10, FILE=fin, STATUS='OLD')
   s = 1
 
-  READ(10, '(A10, BN, I30)') gbg, tmax
-  READ(10, '(A10, BN, I30)') gbg, dmin
+  READ(10, '(10X, BN, I30)') tmax
+  READ(10, '(10X, BN, I30)') dmin
 
   CLOSE(10)
 
