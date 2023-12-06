@@ -39,4 +39,15 @@ INTEGER FUNCTION NLINES(f)
   CLOSE(99)
 END FUNCTION NLINES
 
+SUBROUTINE PRINTMTX(mtx)
+  INTEGER, DIMENSION(:,:) :: mtx
+  INTEGER i, nrow, ncol
+
+  nrow = SIZE(mtx, DIM=1)
+  ncol = SIZE(mtx, DIM=2)
+  DO i = 1,ncol
+     PRINT *, mtx(i,:)
+  END DO
+END SUBROUTINE PRINTMTX
+
 END MODULE UTILS
