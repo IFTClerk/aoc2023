@@ -11,3 +11,11 @@ flags="-Wall -Wextra -Wno-unused-variable -Wno-maybe-uninitialized -fcheck=bound
 #$fc --version
 
 $fc -o main ../utils.f* main.f* $flags
+
+if [ $# -gt 0 ]; then
+    case "$1" in
+        r*)
+            ./main
+            ;;
+    esac
+fi
