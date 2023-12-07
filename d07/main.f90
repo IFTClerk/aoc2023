@@ -54,7 +54,8 @@ ELEMENTAL INTEGER FUNCTION HANDSTR2(hand)
   ! fucking fortran characters
   FORALL(i=1:5) harr(i) = hand(i:i)
   subj = 0
-  IF (COUNT(harr.EQ.'J').GT.0) THEN
+  IF (MODULO(COUNT(harr.EQ.'J'), 5).GT.0) THEN
+     ! we have some wild cards
      maxj = 0
      ! first pass
      DO i=1,5
@@ -65,7 +66,6 @@ ELEMENTAL INTEGER FUNCTION HANDSTR2(hand)
         END IF
      END DO
   END IF
-  IF (COUNT(harr.EQ.'J').EQ.5) subj = -1
   ! second pass
   DO i=1,5
      ! skip if masked as true
@@ -81,9 +81,6 @@ ELEMENTAL INTEGER FUNCTION HANDSTR2(hand)
         ! include wildcards
         msk = (harr.EQ.harr(i)) .OR. (harr.EQ.'J')
      ELSE IF ((subj.GT.0) .AND. (i.NE.subj)) THEN
-        msk = harr.EQ.harr(i)
-     ELSE IF (subj.LT.0) THEN
-        ! special case because I cant be bothered
         msk = harr.EQ.harr(i)
      END IF
      ! figure out strength
