@@ -12,8 +12,8 @@ SUBROUTINE PART1()
   CHARACTER l*256
   INTEGER ios, s
 
-  OPEN(10, FILE=fin, STATUS='OLD')
   s = 0
+  OPEN(10, FILE=fin, STATUS='OLD')
 
   DO
      READ(10, "(A)", IOSTAT=ios) l
