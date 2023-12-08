@@ -63,7 +63,7 @@ INTEGER(KIND=INT64) FUNCTION LCM(a, b)
   ALLOCATE(fs(nf))
   nf = 0
   fs = 1
-  DO i=1,200
+  DO i=1,np
      p = primes(i)
      IF (p.GT.ta .OR. p.GT.tb) EXIT
      DO
