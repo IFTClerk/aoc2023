@@ -18,7 +18,7 @@ MODULE MOD
 CONTAINS
 
 SUBROUTINE READMAP(map, nl)
-  CHARACTER l*400
+  CHARACTER l*256
   TYPE(node), DIMENSION(:), ALLOCATABLE :: map
   INTEGER ios, nl, i, j
 
@@ -36,72 +36,6 @@ SUBROUTINE READMAP(map, nl)
      READ(l, *) map(i)
   END DO
 END SUBROUTINE READMAP
-
-SUBROUTINE PART1()
-  IMPLICIT NONE
-  CHARACTER l*400
-  CHARACTER(LEN=3) :: nn
-  CHARACTER, DIMENSION(:), ALLOCATABLE :: ins
-  INTEGER, DIMENSION(:), ALLOCATABLE:: inn
-  INTEGER ios, s, nl, ni, i, j, fi
-  TYPE(node), DIMENSION(:), ALLOCATABLE :: map
-  TYPE(node) cnode
-
-  s = 0
-  nl = NLINES(fin) - 2
-  OPEN(10, FILE=fin, STATUS='OLD')
-  READ(10, "(A)", IOSTAT=ios) l
-  BACKSPACE(10)
-
-  ! back in my day I had to allocate all my ram
-  ni = LEN_TRIM(l)
-  ALLOCATE(ins(ni))
-  ALLOCATE(inn(ni))
-  READ(10, "(*(A))", IOSTAT=ios) ins
-  inn = MERGE(1,2,ins.EQ.'L')
-  ! and deallocate them
-  DEALLOCATE(ins)
-
-  ! skip newline
-  READ(10, *)
-
-  ALLOCATE(map(nl))
-  CALL READMAP(map, nl)
-  CLOSE(10)
-
-  cnode = map(FINDLOC([(map(i)%name, i=1,nl)], 'AAA', DIM=1))
-  fi = inn(1)
-  i = 1
-  DO
-     s = s + 1
-
-     IF (inn(1).EQ.1) THEN
-        nn  = cnode%left
-     ELSE IF (inn(1).EQ.2) THEN
-        nn = cnode%right
-     END IF
-
-     DO j=1,nl
-        IF (map(j)%name.EQ.nn) THEN
-           i=j
-           EXIT
-        ELSE
-           CONTINUE
-        END IF
-     END DO
-
-     cnode = map(i)
-
-     ! are we at the end?
-     IF (cnode%name.EQ.'ZZZ') EXIT
-     ! otherwise get next instruction
-     inn = CSHIFT(inn, 1)
-  END DO
-
-  WRITE(6,*) "-----------------"
-  WRITE(6,*) "Part 1", s
-  WRITE(6,*) "-----------------"
-END SUBROUTINE PART1
 
 ELEMENTAL LOGICAL FUNCTION ENDWITH(l, c)
   CHARACTER(LEN=*), INTENT(IN) :: l, c
@@ -161,14 +95,81 @@ INTEGER(KIND=INT64) FUNCTION LCMARR(arr)
   END DO
 END FUNCTION LCMARR
 
-SUBROUTINE PART2()
+SUBROUTINE PART1()
   IMPLICIT NONE
-  CHARACTER l*400
+  CHARACTER l*400 ! PAIN
   CHARACTER(LEN=3) :: nn
   CHARACTER, DIMENSION(:), ALLOCATABLE :: ins
-  INTEGER, DIMENSION(:), ALLOCATABLE:: inn, oinn
+  INTEGER ios, s, nl, ni, i, j
+  LOGICAL, DIMENSION(:), ALLOCATABLE :: inn
+  TYPE(node), DIMENSION(:), ALLOCATABLE :: map
+  TYPE(node) cnode
+
+  s = 0
+  nl = NLINES(fin) - 2
+  OPEN(10, FILE=fin, STATUS='OLD')
+  READ(10, "(A)", IOSTAT=ios) l
+  BACKSPACE(10)
+
+  ! back in my day I had to allocate all my ram
+  ni = LEN_TRIM(l)
+  ! uphill both ways
+  ALLOCATE(ins(ni))
+  ALLOCATE(inn(ni))
+  READ(10, "(*(A))", IOSTAT=ios) ins
+  inn = ins.EQ.'L'
+  ! and deallocate them
+  DEALLOCATE(ins)
+
+  ! skip newline
+  READ(10, *)
+
+  ALLOCATE(map(nl))
+  CALL READMAP(map, nl)
+  CLOSE(10)
+
+  cnode = map(FINDLOC([(map(i)%name, i=1,nl)], 'AAA', DIM=1))
+  i = 1
+  DO
+     s = s + 1
+
+     IF (inn(1)) THEN
+        nn  = cnode%left
+     ELSE IF (.NOT.inn(1)) THEN
+        nn = cnode%right
+     END IF
+
+     DO j=1,nl
+        IF (map(j)%name.EQ.nn) THEN
+           i=j
+           EXIT
+        ELSE
+           CONTINUE
+        END IF
+     END DO
+
+     cnode = map(i)
+
+     ! are we at the end?
+     IF (cnode%name.EQ.'ZZZ') EXIT
+     ! otherwise get next instruction
+     inn = CSHIFT(inn, 1)
+  END DO
+
+  WRITE(6,*) "-----------------"
+  WRITE(6,*) "Part 1", s
+  WRITE(6,*) "-----------------"
+END SUBROUTINE PART1
+
+SUBROUTINE PART2()
+  IMPLICIT NONE
+  CHARACTER l*400 ! PAIN
+  CHARACTER(LEN=3) :: nn
+  CHARACTER, DIMENSION(:), ALLOCATABLE :: ins
+  ! INTEGER, DIMENSION(:), ALLOCATABLE:: inn, oinn
+  LOGICAL, DIMENSION(:), ALLOCATABLE :: inn, oinn
   INTEGER(KIND=INT64), DIMENSION(:), ALLOCATABLE :: pathl
-  INTEGER ios, nl, ni, i, j, k, fi, na
+  INTEGER ios, nl, ni, i, j, k, na
   INTEGER(KIND=INT64) s
   LOGICAL, DIMENSION(:), ALLOCATABLE :: msk
   TYPE(node), DIMENSION(:), ALLOCATABLE :: map
@@ -183,10 +184,11 @@ SUBROUTINE PART2()
 
   ! back in my day I had to allocate all my ram
   ni = LEN_TRIM(l)
+  ! uphill both ways
   ALLOCATE(ins(ni))
   ALLOCATE(inn(ni))
   READ(10, "(*(A))", IOSTAT=ios) ins
-  inn = MERGE(1,2,ins.EQ.'L')
+  inn = ins.EQ.'L'
   ! and deallocate them
   DEALLOCATE(ins)
 
@@ -215,14 +217,13 @@ SUBROUTINE PART2()
      pathl(k) = 0
      ! reset instruction at every loop
      inn = oinn
-     fi = inn(1)
      i = 1
      DO
         pathl(k) = pathl(k) + 1
 
-        IF (inn(1).EQ.1) THEN
+        IF (inn(1)) THEN
            nn  = cnode%left
-        ELSE IF (inn(1).EQ.2) THEN
+        ELSE IF (.NOT.inn(1)) THEN
            nn = cnode%right
         END IF
 
