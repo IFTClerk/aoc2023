@@ -4,6 +4,7 @@
 fc=gfortran
 flags="-Wall -Wextra -Wno-unused-variable -Wno-maybe-uninitialized -fcheck=bounds"
 # flags="${flags} -fno-range-check"
+flags="${flags} -g -fbacktrace"
 
 # echo "$flags"
 
