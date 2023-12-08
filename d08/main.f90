@@ -82,16 +82,13 @@ END FUNCTION LCM
 
 INTEGER(KIND=INT64) FUNCTION LCMARR(arr)
   INTEGER(KIND=INT64), DIMENSION(:) :: arr
-  INTEGER(KIND=INT64), DIMENSION(:), ALLOCATABLE :: tarr
   INTEGER na, i
 
   na = SIZE(arr)
-  ALLOCATE(tarr(na))
-  tarr = arr
 
-  lcmarr = tarr(1)
+  lcmarr = arr(1)
   DO i=1,na-1
-     lcmarr = LCM(lcmarr, tarr(i+1))
+     lcmarr = LCM(lcmarr, arr(i+1))
   END DO
 END FUNCTION LCMARR
 
