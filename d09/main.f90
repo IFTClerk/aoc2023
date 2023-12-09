@@ -6,7 +6,6 @@ MODULE MOD
   ! INTEGER, PARAMETER :: ns = 6
   ! CHARACTER*(*), PARAMETER :: fin = "test02.txt"
   CHARACTER*(*), PARAMETER :: fin = "input.txt"
-  ! CHARACTER*(*), PARAMETER :: fin = "inputjack.txt"
   INTEGER, PARAMETER :: ns = 21
 CONTAINS
 
@@ -65,8 +64,8 @@ END SUBROUTINE PART1
 
 SUBROUTINE PART2
   IMPLICIT NONE
-  INTEGER, DIMENSION(ns) :: seq, finn, firn, back
-  INTEGER ios, s, i
+  INTEGER, DIMENSION(ns) :: seq, finn, firn
+  INTEGER ios, s
 
   s = 0
   OPEN(10, FILE=fin, STATUS='OLD')
@@ -75,12 +74,10 @@ SUBROUTINE PART2
      READ(10, *, IOSTAT=ios) seq
      IF (ios.EQ.IOSTAT_END) EXIT
 
+     ! smarter than original solution
+     seq = seq(ns:1:-1)
      CALL EXTRAPOLATE(seq, finn, firn)
-     back = 0
-     DO i=1,ns-1
-        back(i+1) = firn(i+1) - back(i)
-     END DO
-     s = s + back(ns)
+     s = s + SUM(finn)
   END DO
 
   CLOSE(10)
