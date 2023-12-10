@@ -9,8 +9,8 @@ MODULE MOD
   ! CHARACTER*(*), PARAMETER :: fin = "test05.txt"
   CHARACTER*(*), PARAMETER :: fin = "input.txt"
 
-  CHARACTER, DIMENSION(4) :: turns=['F','7','J','L']
   CHARACTER, DIMENSION(8) :: dirs=['U','D','T','R','1','2','3','4']
+  CHARACTER, DIMENSION(4) :: turns=['F','7','J','L']
   INTEGER, DIMENSION(2,4) :: brain=RESHAPE([-1,0,0,1,1,0,0,-1], [2,4])
   INTEGER, DIMENSION(2,4) :: bbrain=RESHAPE([0,-1,-1,0,0,1,1,0], [2,4])
   INTEGER, DIMENSION(2,2) :: rot=RESHAPE([0,-1,1,0], [2,2])
@@ -70,7 +70,6 @@ END FUNCTION FOLLOW
 
 SUBROUTINE PART1()
   IMPLICIT NONE
-  CHARACTER l*256
   CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map
   INTEGER s, nr, nc, sr, sc
   INTEGER dir(2)
@@ -173,7 +172,6 @@ LOGICAL FUNCTION ISSUR(map, nr, nc, xr, xc)
   CHARACTER c
   CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map
   INTEGER xr, xc, nr, nc
-  LOGICAL top,bot,lef,rig
 
   issur = .FALSE.
 
@@ -213,7 +211,6 @@ END FUNCTION ISSUR
 
 SUBROUTINE PART2()
   IMPLICIT NONE
-  CHARACTER l*256
   CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map, omap
   INTEGER s, nr, nc, sr, sc, i, j
   INTEGER dir(2)
