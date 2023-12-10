@@ -9,15 +9,13 @@ MODULE MOD
   INTEGER, PARAMETER :: ns = 21
 CONTAINS
 
-SUBROUTINE EXTRAPOLATE(seq, finn, firn)
-  INTEGER, DIMENSION(ns) :: seq, finn, firn
+SUBROUTINE EXTRAPOLATE(seq, finn)
+  INTEGER, DIMENSION(ns) :: seq, finn
   INTEGER, DIMENSION(:), ALLOCATABLE :: diff, odiff
   INTEGER i, j
 
   finn = 0
   finn(ns) = seq(ns)
-  firn = 0
-  firn(ns) = seq(1)
   DO i=ns,1,-1
      IF (ALLOCATED(odiff)) DEALLOCATE(odiff)
      ALLOCATE(odiff(i))
@@ -33,7 +31,6 @@ SUBROUTINE EXTRAPOLATE(seq, finn, firn)
      FORALL(j=1:i-1) diff(j) = odiff(j+1) - odiff(j)
      IF ((i-1).GT.0) THEN
         finn(i-1) = diff(i-1)
-        firn(i-1) = diff(1)
      END IF
      IF (ALL(diff.EQ.0)) EXIT
   END DO
@@ -41,7 +38,7 @@ END SUBROUTINE EXTRAPOLATE
 
 SUBROUTINE PART1()
   IMPLICIT NONE
-  INTEGER, DIMENSION(ns) :: seq, finn, firn
+  INTEGER, DIMENSION(ns) :: seq, finn
   INTEGER ios, s
 
   s = 0
@@ -51,7 +48,7 @@ SUBROUTINE PART1()
      READ(10, *, IOSTAT=ios) seq
      IF (ios.EQ.IOSTAT_END) EXIT
 
-     CALL EXTRAPOLATE(seq, finn, firn)
+     CALL EXTRAPOLATE(seq, finn)
      s = s + SUM(finn)
   END DO
 
@@ -64,7 +61,7 @@ END SUBROUTINE PART1
 
 SUBROUTINE PART2
   IMPLICIT NONE
-  INTEGER, DIMENSION(ns) :: seq, finn, firn
+  INTEGER, DIMENSION(ns) :: seq, finn
   INTEGER ios, s
 
   s = 0
@@ -76,7 +73,7 @@ SUBROUTINE PART2
 
      ! smarter than original solution
      seq = seq(ns:1:-1)
-     CALL EXTRAPOLATE(seq, finn, firn)
+     CALL EXTRAPOLATE(seq, finn)
      s = s + SUM(finn)
   END DO
 
