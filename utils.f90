@@ -50,4 +50,44 @@ SUBROUTINE PRINTMTX(mtx)
   END DO
 END SUBROUTINE PRINTMTX
 
+ELEMENTAL SUBROUTINE SWAP(x, y)
+  INTEGER, INTENT(INOUT) :: x, y
+  INTEGER t
+
+  t = x
+  x = y
+  y = t
+END SUBROUTINE SWAP
+
+SUBROUTINE RESIZE(arr, n)
+  INTEGER, DIMENSION(:), ALLOCATABLE :: arr, temp
+  INTEGER n, s
+
+  ALLOCATE(temp(n))
+  ! temp = 0
+  s = MIN(n, SIZE(arr))
+  temp(1:s) = arr(1:s)
+  CALL MOVE_ALLOC(temp, arr)
+END SUBROUTINE RESIZE
+
+SUBROUTINE PUSHONE(arr, val)
+  INTEGER, DIMENSION(:), ALLOCATABLE :: arr
+  INTEGER val, s
+
+  s = SIZE(arr)+1
+  CALL RESIZE(arr, s)
+  arr(s) = val
+END SUBROUTINE PUSHONE
+
+SUBROUTINE PUSHARR(arr, varr)
+  INTEGER, DIMENSION(:), ALLOCATABLE :: arr
+  INTEGER, DIMENSION(:) :: varr
+  INTEGER sa, sv
+
+  sa = SIZE(arr)
+  sv = SIZE(varr)
+  CALL RESIZE(arr, sa + sv)
+  arr(sa+1:sa+sv) = varr(1:sv)
+END SUBROUTINE PUSHARR
+
 END MODULE UTILS
