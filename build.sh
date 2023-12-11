@@ -16,7 +16,8 @@ $fc -o main ../utils.f* main.f* $flags
 if [ $# -gt 0 ]; then
     case "$1" in
         r*)
-            ./main
+            ./main | tee >(awk '{if ($1 ~ /^Part/) {print $3; exit 0;}}' \
+                | xclip -selection clipboard)
             ;;
     esac
 fi

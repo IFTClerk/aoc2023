@@ -1,0 +1,9 @@
+#+title: Mistakes
+
+* Things I managed to mess up so far
+- Off by one
+- Insufficient buffer size
+- Not reading in enough digits in edit descriptor
+- Reading comprehension
+- Wrong integer type leading to overflow
+- Poor logic'ing
