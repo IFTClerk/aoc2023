@@ -35,7 +35,7 @@ END SUBROUTINE PUSHV
 SUBROUTINE READMAP(map, nr, nc, gals)
   CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map
   CHARACTER(LEN=256) l
-  INTEGER ios, nr, nc, i, j, ng
+  INTEGER ios, nr, nc, i, j
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: gals
   LOGICAL, DIMENSION(:,:), ALLOCATABLE :: msk
 
@@ -64,7 +64,8 @@ END SUBROUTINE READMAP
 
 PURE INTEGER FUNCTION L1(sep)
   INTEGER, INTENT(IN) :: sep(2)
-  INTEGER asep(2)
+
+  ! Don't we all love Manhattan
   l1 = SUM(ABS(sep))
 END FUNCTION L1
 
@@ -99,7 +100,7 @@ SUBROUTINE PART1()
   END DO
   DO i=nr,1,-1
      IF (ALL(map(i,:).EQ.'.')) THEN
-        ! empty column
+        ! empty row
         emptyr(i) = i
      END IF
   END DO
