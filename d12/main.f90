@@ -116,75 +116,140 @@ SUBROUTINE PART1()
   WRITE(6,*) "-----------------"
 END SUBROUTINE PART1
 
-SUBROUTINE PART2(ln)
+! In this function instead of straight passing the sliced array
+! we pass it the big array and the slicing indices
+! then make it look up in the cache whether we already have the
+! answer or not
+! If not, then slice the array according to how we would have in
+! part 1 and run the same routine
+RECURSIVE FUNCTION SOLVE2(sprs, sgrp, cache, np, ng) RESULT(r)
+  CHARACTER, DIMENSION(:) :: sprs
+  CHARACTER, DIMENSION(:), ALLOCATABLE :: tsprs
+  CHARACTER c, nc
+  INTEGER, DIMENSION(:) :: sgrp
+  INTEGER, DIMENSION(:), ALLOCATABLE :: tsgrp
+  INTEGER g, i, ub, np, ng
+  INTEGER(KIND=INT64) r
+  INTEGER(KIND=INT64), DIMENSION(:,:), ALLOCATABLE :: cache
+  ! LOGICAL, DIMENSION(SIZE(sprs)) :: msk
+
+  r = 0
+  ! check in cache
+  IF (cache(np, ng).NE.-1) THEN
+     r = cache(np, ng)
+     RETURN
+  END IF
+  tsprs = sprs(np:)
+  tsgrp = sgrp(ng:)
+  ! check whether we have enough space left
+  IF (COUNT(tsprs.EQ.'#' .OR. tsprs.EQ.'?').LT.SUM(tsgrp)) THEN
+     cache(np, ng) = 0
+     RETURN
+  END IF
+  ! begin solving
+  g = tsgrp(1)
+  ub = SIZE(tsprs) - g + 1
+  ! loop until upper bound of where solution can lie
+  i = 0
+  DO
+     i = i + 1
+     IF (i.GT.ub) EXIT
+
+     c = tsprs(i)
+     IF (c.EQ.'.') CYCLE
+     IF (c.EQ.'#' .OR. c.EQ.'?') THEN
+        ! prevent OOB error
+        IF ((i+g).GT.SIZE(tsprs)) THEN
+           nc = '.'
+        ELSE
+           nc = tsprs(i+g)
+        END IF
+        IF (ALL(tsprs(i:i+g-1).EQ.'#' .OR. tsprs(i:i+g-1).EQ.'?') .AND. &
+             nc.NE.'#') THEN
+           ! potential solution
+           IF (SIZE(tsgrp).EQ.1) THEN
+              ! check whether we have too many # left
+              IF (COUNT(tsprs(i+g+1:).EQ.'#').GT.0) THEN
+                 CONTINUE
+              ELSE
+                 r = r + 1
+              END IF
+           ELSE
+              r = r + SOLVE2(sprs, sgrp, cache, np+i+g, ng+1)
+           END IF
+        END IF
+        ! look no further if already fully filled
+        IF (c.EQ.'#') THEN
+           cache(np, ng) = r
+           RETURN
+        END IF
+     END IF
+  END DO
+
+  cache(np, ng) = r
+END FUNCTION SOLVE2
+
+SUBROUTINE PART2()
   IMPLICIT NONE
   CHARACTER l*256
   CHARACTER, DIMENSION(:), ALLOCATABLE :: sprs, bigsprs
-  INTEGER ios, i, ws, nc, ln
+  INTEGER ios, i, ws, nc
   INTEGER(KIND=INT64) s, j
   INTEGER, DIMENSION(:), ALLOCATABLE :: sgrp, bigsgrp
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: cache
+  INTEGER(KIND=INT64), DIMENSION(:,:), ALLOCATABLE :: cache
 
   s = 0
-  ALLOCATE(cache(256,256))
-  cache = -1
   OPEN(10, FILE=fin, STATUS='OLD')
 
   i = 0
   DO
+     READ(10, "(A)", IOSTAT=ios) l
+     IF (ios.EQ.IOSTAT_END) EXIT
      i = i + 1
-     IF (i.LT.ln) THEN
-        READ(10, '(A)')
-     ELSE
-        EXIT
-     END IF
+
+     nc = COUNTSTR(TRIM(l), ',')
+     ws = INDEX(l, ' ')
+     ALLOCATE(sgrp(nc+1))
+     ALLOCATE(sprs(ws-1))
+     READ(l(1:ws-1), '(*(A))') sprs
+     READ(l(ws+1:), *) sgrp
+
+     ! God I fucking hate this
+     ALLOCATE(bigsgrp(5*SIZE(sgrp)))
+     ALLOCATE(bigsprs(5*SIZE(sprs)+5))
+
+     CALL PUSHONEC(sprs, '?')
+
+     bigsgrp = PACK(SPREAD(sgrp, 2, 5), .TRUE.)
+     bigsprs = PACK(SPREAD(sprs, 2, 5), .TRUE.)
+     CALL RESIZEC(bigsprs, SIZE(bigsprs)-1)
+
+     ALLOCATE(cache(256,256))
+     cache = -1
+
+     j = SOLVE2(bigsprs, bigsgrp, cache, 1, 1)
+     WRITE(6, '(1X, I0, 1X, I0)') i, j
+     s = s + j
+
+     DEALLOCATE(sgrp)
+     DEALLOCATE(sprs)
+     DEALLOCATE(bigsgrp)
+     DEALLOCATE(bigsprs)
+     DEALLOCATE(cache)
   END DO
 
-  READ(10, '(A)') l
-  ! IF (ios.EQ.IOSTAT_END) EXIT
   CLOSE(10)
 
-  nc = COUNTSTR(TRIM(l), ',')
-  ws = INDEX(l, ' ')
-  ALLOCATE(sgrp(nc+1))
-  ALLOCATE(sprs(ws-1))
-  READ(l(1:ws-1), '(*(A))') sprs
-  READ(l(ws+1:), *) sgrp
-
-  ! God I fucking hate this
-  ALLOCATE(bigsgrp(5*SIZE(sgrp)))
-  ALLOCATE(bigsprs(5*SIZE(sprs)+5))
-
-  CALL PUSHONEC(sprs, '?')
-
-  bigsgrp = PACK(SPREAD(sgrp, 2, 5), .TRUE.)
-  bigsprs = PACK(SPREAD(sprs, 2, 5), .TRUE.)
-  CALL RESIZEC(bigsprs, SIZE(bigsprs)-1)
-
-  j = SOLVE(bigsprs, bigsgrp)
-  s = s + j
-
-  DEALLOCATE(sgrp)
-  DEALLOCATE(sprs)
-  DEALLOCATE(bigsgrp)
-  DEALLOCATE(bigsprs)
-
   WRITE(6,*) s
+
 END SUBROUTINE PART2
 
 END MODULE MOD
 
 PROGRAM MAIN
   USE MOD
-  CHARACTER(len=16) lc
-  INTEGER ln
 
   ! CALL PART1()
-  ! I am cheating in part 2 by making it run
-  ! on the university batch system then summing all the outputs
-  CALL GET_COMMAND_ARGUMENT(1, lc)
-  IF (LEN_TRIM(lc).EQ.0) STOP
-  READ(lc, '(I4)') ln
-  CALL PART2(ln)
+  CALL PART2()
 
 END PROGRAM MAIN
