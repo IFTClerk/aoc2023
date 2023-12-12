@@ -1,4 +1,5 @@
 MODULE MOD
+  USE, INTRINSIC :: ISO_FORTRAN_ENV
   USE UTILS
   IMPLICIT NONE
 
@@ -217,11 +218,11 @@ SUBROUTINE PART2()
      ALLOCATE(bigsgrp(5*SIZE(sgrp)))
      ALLOCATE(bigsprs(5*SIZE(sprs)+5))
 
-     CALL PUSHONEC(sprs, '?')
+     CALL PUSHONE(sprs, '?')
 
      bigsgrp = PACK(SPREAD(sgrp, 2, 5), .TRUE.)
      bigsprs = PACK(SPREAD(sprs, 2, 5), .TRUE.)
-     CALL RESIZEC(bigsprs, SIZE(bigsprs)-1)
+     CALL RESIZE(bigsprs, SIZE(bigsprs)-1)
 
      ALLOCATE(cache(SIZE(bigsprs)+10,SIZE(bigsgrp)))
      cache = -1
