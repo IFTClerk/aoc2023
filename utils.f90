@@ -90,4 +90,25 @@ SUBROUTINE PUSHARR(arr, varr)
   arr(sa+1:sa+sv) = varr(1:sv)
 END SUBROUTINE PUSHARR
 
+SUBROUTINE RESIZEC(arr, n)
+  CHARACTER, DIMENSION(:), ALLOCATABLE :: arr, temp
+  INTEGER n, s
+
+  ALLOCATE(temp(n))
+  ! temp = 0
+  s = MIN(n, SIZE(arr))
+  temp(1:s) = arr(1:s)
+  CALL MOVE_ALLOC(temp, arr)
+END SUBROUTINE RESIZEC
+
+SUBROUTINE PUSHONEC(arr, val)
+  CHARACTER, DIMENSION(:), ALLOCATABLE :: arr
+  CHARACTER val
+  INTEGER s
+
+  s = SIZE(arr)+1
+  CALL RESIZEC(arr, s)
+  arr(s) = val
+END SUBROUTINE PUSHONEC
+
 END MODULE UTILS

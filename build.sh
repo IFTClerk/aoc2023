@@ -5,6 +5,7 @@ fc=gfortran
 flags="-Wall -Wextra -Wno-unused-variable -Wno-maybe-uninitialized -fcheck=bounds"
 # flags="${flags} -fno-range-check"
 flags="${flags} -g -fbacktrace"
+# flags="${flags} -fopenmp"
 
 # echo "$flags"
 
@@ -12,6 +13,10 @@ flags="${flags} -g -fbacktrace"
 #$fc --version
 
 $fc -o main ../utils.f* main.f* $flags
+
+if [ $? -ne 0 ]; then
+    exit 1;
+fi
 
 if [ $# -gt 0 ]; then
     case "$1" in
