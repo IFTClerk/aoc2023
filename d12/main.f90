@@ -102,7 +102,7 @@ SUBROUTINE PART1()
      READ(l(ws+1:), *) sgrp
 
      j = SOLVE(sprs, sgrp)
-     WRITE(6, '(1X, I0, 1X, I0)') i, j
+     ! WRITE(6, '(1X, I0, 1X, I0)') i, j
      s = s + j
 
      DEALLOCATE(sgrp)
@@ -131,7 +131,6 @@ RECURSIVE FUNCTION SOLVE2(sprs, sgrp, cache, np, ng) RESULT(r)
   INTEGER g, i, ub, np, ng
   INTEGER(KIND=INT64) r
   INTEGER(KIND=INT64), DIMENSION(:,:), ALLOCATABLE :: cache
-  ! LOGICAL, DIMENSION(SIZE(sprs)) :: msk
 
   r = 0
   ! check in cache
@@ -224,11 +223,11 @@ SUBROUTINE PART2()
      bigsprs = PACK(SPREAD(sprs, 2, 5), .TRUE.)
      CALL RESIZEC(bigsprs, SIZE(bigsprs)-1)
 
-     ALLOCATE(cache(256,256))
+     ALLOCATE(cache(SIZE(bigsprs)+10,SIZE(bigsgrp)))
      cache = -1
 
      j = SOLVE2(bigsprs, bigsgrp, cache, 1, 1)
-     WRITE(6, '(1X, I0, 1X, I0)') i, j
+     ! WRITE(6, '(1X, I0, 1X, I0)') i, j
      s = s + j
 
      DEALLOCATE(sgrp)
@@ -240,7 +239,9 @@ SUBROUTINE PART2()
 
   CLOSE(10)
 
-  WRITE(6,*) s
+  WRITE(6,*) "-----------------"
+  WRITE(6,*) "Part 2", s
+  WRITE(6,*) "-----------------"
 
 END SUBROUTINE PART2
 
