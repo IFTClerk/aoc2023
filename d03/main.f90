@@ -1,12 +1,13 @@
 MODULE MOD
+  USE, INTRINSIC :: ISO_FORTRAN_ENV
   USE UTILS
   IMPLICIT NONE
 
   INTEGER, PARAMETER :: long = SELECTED_INT_KIND(16)
   ! CHARACTER*(*), PARAMETER :: fin = "test01.txt"
   ! CHARACTER*(*), PARAMETER :: fin = "test02.txt"
-  ! CHARACTER*(*), PARAMETER :: fin = "input.txt"
-  CHARACTER*(*), PARAMETER :: fin = "Hxtu.txt"
+  CHARACTER*(*), PARAMETER :: fin = "input.txt"
+  ! CHARACTER*(*), PARAMETER :: fin = "Hxtu.txt"
 CONTAINS
 
 SUBROUTINE MAKESCHEM(scm, nr, nc)
