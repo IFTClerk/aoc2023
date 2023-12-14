@@ -6,6 +6,6 @@
 | Off by one                                      |     4 |
 | Insufficient buffer size                        |     2 |
 | Not reading in enough digits in edit descriptor |     1 |
-| Reading comprehension                           |     1 |
+| Reading comprehension                           |     3 |
 | Wrong integer type leading to overflow          |     2 |
 | Poor logic'ing                                  |     3 |
