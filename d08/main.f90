@@ -104,8 +104,8 @@ SUBROUTINE PART1()
   TYPE(node) cnode
 
   s = 0
-  nl = NLINES(fin) - 2
   OPEN(10, FILE=fin, STATUS='OLD')
+  nl = NLINES(10) - 2
   READ(10, "(A)", IOSTAT=ios) l
   BACKSPACE(10)
 
@@ -175,8 +175,8 @@ SUBROUTINE PART2()
   TYPE(node) cnode
 
   s = 0
-  nl = NLINES(fin) - 2
   OPEN(10, FILE=fin, STATUS='OLD')
+  nl = NLINES(10) - 2
   READ(10, "(A)", IOSTAT=ios) l
   BACKSPACE(10)
 

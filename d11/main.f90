@@ -40,8 +40,8 @@ SUBROUTINE READMAP(map, nr, nc, gals)
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: gals
   LOGICAL, DIMENSION(:,:), ALLOCATABLE :: msk
 
-  nr = NLINES(fin)
   OPEN(10, FILE=fin, STATUS='OLD')
+  nr = NLINES(10)
   READ(10, "(A)", IOSTAT=ios) l
   nc = LEN_TRIM(l)
   BACKSPACE(10)

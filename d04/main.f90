@@ -40,10 +40,10 @@ SUBROUTINE PART1()
   INTEGER, ALLOCATABLE :: cw(:)
   INTEGER s, ncw, i
 
-  ncw = NLINES(fin)
-  ALLOCATE(cw(ncw))
-
   OPEN(10, FILE=fin, STATUS='OLD')
+
+  ncw = NLINES(10)
+  ALLOCATE(cw(ncw))
 
   DO i=1,ncw
      CALL COUNTCARDS(10, cw(i))
@@ -63,11 +63,11 @@ SUBROUTINE PART2()
   INTEGER, ALLOCATABLE :: cw(:), xcw(:)
   INTEGER s, ncw, i, j
 
-  ncw = NLINES(fin)
+  OPEN(10, FILE=fin, STATUS='OLD')
+
+  ncw = NLINES(10)
   ALLOCATE(cw(ncw))
   ALLOCATE(xcw(ncw))
-
-  OPEN(10, FILE=fin, STATUS='OLD')
 
   DO i=1,ncw
      CALL COUNTCARDS(10, cw(i))

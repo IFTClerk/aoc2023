@@ -204,13 +204,13 @@ SUBROUTINE PART1()
   INTEGER ios, s, nl, i
 
   s = 0
-  nl = NLINES(fin)
+  OPEN(10, FILE=fin, STATUS='OLD')
+  nl = NLINES(10)
   ALLOCATE(hnd(nl))
   ALLOCATE(bid(nl))
   ALLOCATE(str(nl))
   ALLOCATE(rank(nl))
 
-  OPEN(10, FILE=fin, STATUS='OLD')
   READ(10, "(A5,1X,I4)", IOSTAT=ios) (hnd(i), bid(i), i=1,nl)
   CLOSE(10)
 
@@ -237,13 +237,13 @@ SUBROUTINE PART2()
   INTEGER ios, s, nl, i
 
   s = 0
-  nl = NLINES(fin)
+  OPEN(10, FILE=fin, STATUS='OLD')
+  nl = NLINES(10)
   ALLOCATE(hnd(nl))
   ALLOCATE(bid(nl))
   ALLOCATE(str(nl))
   ALLOCATE(rank(nl))
 
-  OPEN(10, FILE=fin, STATUS='OLD')
   READ(10, "(A5,1X,I4)", IOSTAT=ios) (hnd(i), bid(i), i=1,nl)
   CLOSE(10)
 

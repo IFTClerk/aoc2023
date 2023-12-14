@@ -13,8 +13,8 @@ SUBROUTINE READMAP(map, nr, nc)
   CHARACTER(LEN=256) l
   INTEGER ios, nr, nc, i, j
 
-  nr = NLINES(fin)
   OPEN(10, FILE=fin, STATUS='OLD')
+  nr = NLINES(10)
   READ(10, "(A)", IOSTAT=ios) l
   nc = LEN_TRIM(l)
   BACKSPACE(10)
@@ -89,13 +89,13 @@ SUBROUTINE TILT(col, nr)
   CALL MOVE_ALLOC(nucol, col)
 END SUBROUTINE TILT
 
-SUBROUTINE ROT(map, nr, nc)
-  CHARACTER, DIMENSION(nr,nc) :: map
+SUBROUTINE ROT(brain, nr, nc)
+  CHARACTER, DIMENSION(nr,nc) :: brain ! otherwise known as map
   INTEGER nr, nc
 
   ! rotate clockwise = (vertical reflection) o (transpose)
-  map = TRANSPOSE(map)
-  map(:,1:nc) = map(:,nc:1:-1)
+  brain = TRANSPOSE(brain)
+  brain(:,1:nc) = brain(:,nc:1:-1)
 END SUBROUTINE
 
 INTEGER FUNCTION DLOAD(col, nr)
@@ -146,7 +146,7 @@ SUBROUTINE PART2()
      END DO
   END DO cycle
 
-  m = MODULO(1000000000_int64 - d, c-d)
+  m = INT(MODULO(1000000000_int64 - d, c-d), KIND=INT32)
 
   map = maps(d,:,:)
   DO c=1,m
@@ -166,7 +166,7 @@ SUBROUTINE PART2()
   ! CALL PRINTMTX(map)
 
   DO i=1,nc
-     ! eric didn't want me to find out the tiled load
+     ! eric didn't want me to find out the tilted load
      ! so I had to write another function
      s = s + DLOAD(map(:,i),nr)
   END DO

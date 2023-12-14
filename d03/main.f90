@@ -18,12 +18,12 @@ SUBROUTINE MAKESCHEM(scm, nr, nc)
 
   OPEN(UNIT=50, FILE=fin, STATUS='old')
 
+  nr = NLINES(fin)
+
   READ(50, '(A)', IOSTAT=ios) l
   IF (ios.EQ.IOSTAT_END) nc=0
   nc = LEN_TRIM(l)
   CLOSE(50)
-
-  nr = NLINES(fin)
 
   IF (nr.EQ.0 .OR. nc.EQ.0) THEN
      WRITE(6,*) "Unable to find valid schematic in ", fin
