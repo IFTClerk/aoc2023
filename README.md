@@ -35,3 +35,4 @@ Here is my subjective view of the difficulty of each day's puzzle, which is addi
 | 13 | find planes of reflection | * |
 | 14 | rolling rocks and cycle finding | ** |
 | 15 | string parsing then array manipulation | *** |
+| 16 | mirror room puzzle | *** |
