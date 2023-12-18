@@ -8,6 +8,6 @@
 | Not reading in enough digits in edit descriptor |     1 |
 | Reading comprehension                           |     3 |
 | Wrong integer type leading to overflow          |     2 |
-| Poor logic'ing                                  |     7 |
+| Poor logic'ing                                  |     8 |
 | Forgot to malloc() arrays                       |     1 |
-| Pointers                                        |  1    |
+| Pointers                                        |     1 |

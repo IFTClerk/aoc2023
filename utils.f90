@@ -127,7 +127,7 @@ SUBROUTINE PRINTMAT_I(mtx)
 
   nrow = SIZE(mtx, DIM=1)
   ncol = SIZE(mtx, DIM=2)
-  DO i = 1,ncol
+  DO i = 1,nrow
      WRITE(6, '(1X,*(I0,1X))') mtx(i,:)
   END DO
 END SUBROUTINE PRINTMAT_I
@@ -138,7 +138,7 @@ SUBROUTINE PRINTMAT_C(mtx)
 
   nrow = SIZE(mtx, DIM=1)
   ncol = SIZE(mtx, DIM=2)
-  DO i = 1,ncol
+  DO i = 1,nrow
      WRITE(6, '(1X,*(A,1X))') mtx(i,:)
   END DO
 END SUBROUTINE PRINTMAT_C
