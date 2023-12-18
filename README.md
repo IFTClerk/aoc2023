@@ -37,3 +37,4 @@ Here is my subjective view of the difficulty of each day's puzzle, which is addi
 | 15 | string parsing then array manipulation | *** |
 | 16 | mirror room puzzle | *** |
 | 17 | pathfinding with movement restrictions | ***** |
+| 18 | find area of polygon | ** |
