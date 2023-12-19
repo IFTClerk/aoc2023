@@ -140,7 +140,6 @@ SUBROUTINE READINPUT(lu, flows, parts)
      END DO
      ! final bit
      READ(l, '(A)') dest
-     ! PRINT *, "default ", dest
      iwf = FINDLOC(fnames, dest, DIM=1)
      CALL ADDRULE(flo, 1, '>', -1, flows(iwf))
   END DO
@@ -174,28 +173,22 @@ RECURSIVE FUNCTION PROCESS(part, flo) RESULT(res)
   END IF
   res = .FALSE.
   ! PRINT *, "Workflow ", flo%name
-  DO
-     nr = SIZE(flo%rules)
-     DO i=1,nr
-        rul = flo%rules(i)
-        IF (rul%op.EQ.'<') THEN
-           IF (part(rul%idx).LT.rul%val) THEN
-              res = PROCESS(part, rul%dest)
-              RETURN
-           ELSE
-              CYCLE
-           END IF
-        ELSE IF (rul%op.EQ.'>') THEN
-           IF (part(rul%idx).GT.rul%val) THEN
-              res = PROCESS(part, rul%dest)
-              RETURN
-           ELSE
-              CYCLE
-           END IF
-        ELSE
-           PRINT *, "Unknown operation ", rul%op
+  nr = SIZE(flo%rules)
+  DO i=1,nr
+     rul = flo%rules(i)
+     IF (rul%op.EQ.'<') THEN
+        IF (part(rul%idx).LT.rul%val) THEN
+           res = PROCESS(part, rul%dest)
+           RETURN
         END IF
-     END DO
+     ELSE IF (rul%op.EQ.'>') THEN
+        IF (part(rul%idx).GT.rul%val) THEN
+           res = PROCESS(part, rul%dest)
+           RETURN
+        END IF
+     ELSE
+        PRINT *, "Unknown operation ", rul%op
+     END IF
   END DO
 END FUNCTION PROCESS
 
@@ -211,7 +204,6 @@ SUBROUTINE PART1()
   CALL READINPUT(10, flows, parts)
   CLOSE(10)
   ! CALL PRINTFLOW(flows(1))
-  ! PRINT *, parts(:,4)
   in = FINDLOC(fnames,'in',DIM=1)
   np = SIZE(parts,DIM=2)
   ALLOCATE(msk(np))
@@ -236,16 +228,15 @@ SUBROUTINE SPLITPART(parts, np, idx, at)
   LOGICAL, DIMENSION(SIZE(parts)) :: msk
 
   np = SIZE(parts)
-  sts = [(parts(i)%start(idx) ,i=1,np)]
-  ens = [(parts(i)%end(idx) ,i=1,np)]
-  msk = sts.LT.at .AND. ens.GE.at .AND. [(parts(i)%cont, i=1,np)]
+  msk = [(parts(i)%start(idx).LT.at .AND. parts(i)%end(idx).GE.at &
+       .AND. parts(i)%cont, i=1,np)]
   nx = COUNT(msk)
   ALLOCATE(tmp(np+nx))
-  tmp(1:np-nx) = PACK(parts, .NOT.msk)
-  tsplt = PACK(parts, msk)
+  tmp(1:np-nx) = PACK(parts, .NOT.msk)  ! don't split these
+  tsplt = PACK(parts, msk)              ! split these
   DO i=1,nx
      p1 = tsplt(i)
-     IF (p1%acc) PRINT *, "BAD: Tried to split finished part!"
+     ! IF (p1%acc) PRINT *, "BAD: Tried to split finished part!"
      p2 = p1
      p1%end(idx) = at - 1
      p2%start(idx) = at
@@ -276,7 +267,6 @@ RECURSIVE SUBROUTINE PROCESS2(parts, flo)
      END DO
      RETURN
   END IF
-  ! PRINT *, "Workflow ", flo%name
   nr = SIZE(flo%rules)
   DO i=1,nr
      np = SIZE(parts)
@@ -285,13 +275,12 @@ RECURSIVE SUBROUTINE PROCESS2(parts, flo)
         CALL SPLITPART(parts, np, rul%idx, rul%val)
         ! find ones that need to be sent to detroit
         msk = [(parts(j)%end(rul%idx).LT.rul%val .AND. parts(j)%cont, j=1,np)]
-        tmp = PACK(parts, msk)
-        parts = PACK(parts, .NOT.msk)
-        CALL PROCESS2(tmp, rul%dest)
-        parts = [parts, tmp]
+        tmp = PACK(parts, msk)          ! these go to detroit
+        parts = PACK(parts, .NOT.msk)   ! these go through
+        CALL PROCESS2(tmp, rul%dest)    ! to detroit
+        parts = [parts, tmp]            ! reunited
      ELSE IF (rul%op.EQ.'>') THEN
         CALL SPLITPART(parts, np, rul%idx, rul%val+1)
-        ! find ones that need to be sent to detroit
         msk = [(parts(j)%start(rul%idx).GT.rul%val .AND. parts(j)%cont, j=1,np)]
         tmp = PACK(parts, msk)
         parts = PACK(parts, .NOT.msk)
@@ -324,7 +313,7 @@ SUBROUTINE PART2()
   CALL PROCESS2(parts, flows(in))
   DO i=1,SIZE(parts)
      IF (parts(i)%acc) THEN
-        s = s + PRODUCT(INT(parts(i)%end - parts(i)%start+1, KIND=INT64))
+        s = s + PRODUCT(INT(parts(i)%end - parts(i)%start + 1, KIND=INT64))
      END IF
   END DO
 
