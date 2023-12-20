@@ -39,3 +39,4 @@ Here is my subjective view of the difficulty of each day's puzzle, which is addi
 | 17 | pathfinding with movement restrictions | ***** |
 | 18 | find area of polygon | ** |
 | 19 | parse stupid instructions win stupid prizes | ***** |
+| 20 | flip flop chains | part 1 ***; part 2 ???) |

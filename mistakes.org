@@ -7,7 +7,7 @@
 | Insufficient buffer size                        |     2 |
 | Not reading in enough digits in edit descriptor |     1 |
 | Reading comprehension                           |     3 |
-| Wrong integer type leading to overflow          |     3 |
-| Poor logic'ing                                  |     8 |
+| Wrong integer type leading to overflow          |     4 |
+| Poor logic'ing                                  |     9 |
 | Forgot to malloc() arrays                       |     1 |
-| Pointers                                        |     2 |
+| Pointers                                        |     3 |
