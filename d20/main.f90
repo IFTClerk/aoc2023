@@ -251,6 +251,7 @@ SUBROUTINE PART2A()
      END DO
      IF (ALL(.NOT.msk)) EXIT
   END DO
+  !PRINT *, cyc
   s = PRODUCT(INT(cyc, KIND=INT64))
 
   WRITE(6,*) "-----------------"
