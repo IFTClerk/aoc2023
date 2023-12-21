@@ -12,59 +12,7 @@ MODULE MOD
   INTEGER, DIMENSION(2,4), PARAMETER :: dirs=RESHAPE([nor,sou,est,wst],[2,4])
 CONTAINS
 
-SUBROUTINE STEP(map, nr, nc, locs)
-  INTEGER, INTENT(IN) :: nr, nc
-  CHARACTER, DIMENSION(nr,nc), INTENT(IN) :: map
-  INTEGER, DIMENSION(:,:), ALLOCATABLE, INTENT(INOUT) :: locs
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: tmp
-  INTEGER nl, ni, nn, i, j, loc(2), nxt(2), nlocs(2,4)
-
-  nl = SIZE(locs,DIM=2)
-  ALLOCATE(tmp(2,0))
-  DO i=1,nl
-     ni = SIZE(tmp,DIM=2)
-     loc = locs(:,1)
-     locs = locs(:,2:)
-     nn = 0
-     DO j=1,4
-        nxt = loc + dirs(:,j)
-        IF (ANY(tmp(1,:).EQ.nxt(1) .AND. tmp(2,:).EQ.nxt(2))) CYCLE
-        IF (nxt(1).LT.1 .OR. nxt(2).LT.1 .OR. &
-             nxt(1).GT.nr .OR. nxt(2).GT.nc) CYCLE
-        IF (map(nxt(1),nxt(2)).EQ.'#') CYCLE
-        nn = nn + 1
-        nlocs(:,nn) = nxt
-     END DO
-     tmp = RESHAPE([tmp, nlocs],[2,ni+nn])
-  END DO
-  CALL MOVE_ALLOC(tmp, locs)
-END SUBROUTINE STEP
-
-SUBROUTINE PART1()
-  IMPLICIT NONE
-  CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: locs
-  INTEGER s, nr, nc, i
-
-  s = 0
-  OPEN(10, FILE=fin, STATUS='OLD')
-  CALL READMAT(10, map, nr, nc)
-  CLOSE(10)
-  ! CALL PRINTMAT(map)
-  ALLOCATE(locs(2,1))
-  locs(:,1) = FINDLOC(map, 'S')
-  map(locs(1,1), locs(2,1)) = '.'
-  DO i=1,64
-     CALL STEP(map, nr, nc, locs)
-  END DO
-  s = SIZE(locs,DIM=2)
-
-  WRITE(6,*) "-----------------"
-  WRITE(6,*) "Part 1", s
-  WRITE(6,*) "-----------------"
-END SUBROUTINE PART1
-
-SUBROUTINE STEP2(map, nr, nc, sloc, ns, odd, evn)
+SUBROUTINE STEP(map, nr, nc, sloc, ns, odd, evn)
   INTEGER, INTENT(IN) :: nr, nc
   CHARACTER, DIMENSION(nr,nc), INTENT(IN) :: map
   LOGICAL, DIMENSION(nr,nc), INTENT(OUT) :: odd, evn
@@ -107,7 +55,30 @@ SUBROUTINE STEP2(map, nr, nc, sloc, ns, odd, evn)
      END DO
      CALL MOVE_ALLOC(tmp, q)
   END DO
-END SUBROUTINE STEP2
+END SUBROUTINE STEP
+
+SUBROUTINE PART1()
+  IMPLICIT NONE
+  CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: locs
+  INTEGER s, nr, nc, i, sloc(2)
+  LOGICAL, DIMENSION(:,:), ALLOCATABLE :: odd, evn
+
+  s = 0
+  OPEN(10, FILE=fin, STATUS='OLD')
+  CALL READMAT(10, map, nr, nc)
+  CLOSE(10)
+  sloc = FINDLOC(map, 'S')
+  map(sloc(1),sloc(2)) = '.'
+  ALLOCATE(odd(nr,nc))
+  ALLOCATE(evn(nr,nc))
+  CALL STEP(map, nr, nc, sloc, 64, odd, evn)
+  s = COUNT(evn)
+
+  WRITE(6,*) "-----------------"
+  WRITE(6,*) "Part 1", s
+  WRITE(6,*) "-----------------"
+END SUBROUTINE PART1
 
 SUBROUTINE PART2()
   IMPLICIT NONE
@@ -129,7 +100,7 @@ SUBROUTINE PART2()
   ALLOCATE(evn(nr,nc))
   ALLOCATE(evn2(nr,nc))
   ALLOCATE(tevn(nr,nc))
-  CALL STEP2(map, nr, nc, sloc, nr*2, odd, evn)
+  CALL STEP(map, nr, nc, sloc, nr*2, odd, evn)
   sodd = COUNT(odd)
   sevn = COUNT(evn)
 
@@ -139,22 +110,22 @@ SUBROUTINE PART2()
   ! step through nr-1 steps since the first step is moving onto the grid
   ! north
   sloc = [1,nc/2+1]
-  CALL STEP2(map, nr, nc, sloc, nr-1, odd, evn)
+  CALL STEP(map, nr, nc, sloc, nr-1, odd, evn)
   scar(1) = COUNT(evn)
   tevn = evn
   ! east
   sloc = [nr/2+1,nc]
-  CALL STEP2(map, nr, nc, sloc, nc-1, odd, evn2)
+  CALL STEP(map, nr, nc, sloc, nc-1, odd, evn2)
   sint(1) = COUNT(evn.OR.evn2)
   scar(2) = COUNT(evn2)
   ! south
   sloc = [nr,nc/2+1]
-  CALL STEP2(map, nr, nc, sloc, nr-1, odd, evn)
+  CALL STEP(map, nr, nc, sloc, nr-1, odd, evn)
   sint(2) = COUNT(evn.OR.evn2)
   scar(3) = COUNT(evn)
   ! west
   sloc = [nr/2+1,1]
-  CALL STEP2(map, nr, nc, sloc, nc-1, odd, evn2)
+  CALL STEP(map, nr, nc, sloc, nc-1, odd, evn2)
   sint(3) = COUNT(evn.OR.evn2)
   scar(4) = COUNT(evn2)
   sint(4) = COUNT(tevn.OR.evn2)
@@ -163,16 +134,16 @@ SUBROUTINE PART2()
   ! corners
   np = nc - nc/2 - 2
   sloc = [1,1]
-  CALL STEP2(map, nr, nc, sloc, np, odd, evn)
+  CALL STEP(map, nr, nc, sloc, np, odd, evn)
   scnr(1) = COUNT(evn)
   sloc = [1,nc]
-  CALL STEP2(map, nr, nc, sloc, np, odd, evn)
+  CALL STEP(map, nr, nc, sloc, np, odd, evn)
   scnr(2) = COUNT(evn)
   sloc = [nr,1]
-  CALL STEP2(map, nr, nc, sloc, np, odd, evn)
+  CALL STEP(map, nr, nc, sloc, np, odd, evn)
   scnr(3) = COUNT(evn)
   sloc = [nr,nc]
-  CALL STEP2(map, nr, nc, sloc, np, odd, evn)
+  CALL STEP(map, nr, nc, sloc, np, odd, evn)
   scnr(4) = COUNT(evn)
 
   s = sodd
@@ -195,6 +166,6 @@ END MODULE MOD
 PROGRAM MAIN
   USE MOD
 
-  ! CALL PART1()
+  CALL PART1()
   CALL PART2()
 END PROGRAM MAIN
