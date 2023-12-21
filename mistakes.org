@@ -3,11 +3,11 @@
 * Things I managed to mess up so far
 | Reason                                          | Count |
 |-------------------------------------------------+-------|
-| Off by one                                      |     6 |
+| Off by one                                      |     7 |
 | Insufficient buffer size                        |     2 |
 | Not reading in enough digits in edit descriptor |     1 |
 | Reading comprehension                           |     3 |
 | Wrong integer type leading to overflow          |     4 |
-| Poor logic'ing                                  |     9 |
+| Poor logic'ing                                  |     10 |
 | Forgot to malloc() arrays                       |     1 |
 | Pointers                                        |     3 |
