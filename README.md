@@ -41,3 +41,4 @@ Here is my subjective view of the difficulty of each day's puzzle, which is addi
 | 19 | parse stupid instructions win stupid prizes | ***** |
 | 20 | flip flop chains and counters | part 1 ***; part 2 ??? |
 | 21 | stepping through an infinite checkerboard | part 1 **; part 2 **** |
+| 22 | Jenga | *** |
