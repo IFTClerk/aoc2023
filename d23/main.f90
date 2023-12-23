@@ -334,13 +334,14 @@ RECURSIVE SUBROUTINE DFS3(adj, nnx, sn, nstep, cstep, seen)
 
   IF (sn.EQ.nnx) THEN
      nstep = [nstep, cstep]
-     PRINT *, maxval(nstep)
+     ! PRINT *, maxval(nstep)
      RETURN
   END IF
   ln = [(i, i=1,nnx)]
   cur = sn
   ca => adj(cur,:)
   nxt = PACK(ln, (ca.GT.0 .AND. .NOT.seen))
+  IF (ANY(nxt.EQ.nnx)) nxt = [nnx]
   DO j=1,SIZE(nxt)
      cs = cstep
      cs = cs + adj(cur,nxt(j))
@@ -353,7 +354,7 @@ END SUBROUTINE DFS3
 SUBROUTINE PART2()
   IMPLICIT NONE
   CHARACTER, DIMENSION(:,:), ALLOCATABLE :: map
-  INTEGER s, nr, nc, nn, nx, nnx, cstep, i
+  INTEGER s, nr, nc, nn, nx, nnx, cstep
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: adj
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: xadj
   INTEGER, DIMENSION(:,:), ALLOCATABLE :: xroads
