@@ -7,7 +7,7 @@ MODULE MOD
   ! REAL(KIND=REAL64), PARAMETER :: minp=7, maxp=27
   ! CHARACTER*(*), PARAMETER :: fin = "test02.txt"
   CHARACTER*(*), PARAMETER :: fin = "input.txt"
-  REAL(KIND=REAL128), PARAMETER :: minp=200000000000000_real64, maxp=400000000000000_real64
+  REAL(KIND=REAL128), PARAMETER :: minp=200000000000000_real128, maxp=400000000000000_real128
 
 CONTAINS
 
@@ -44,8 +44,6 @@ SUBROUTINE PART1()
   DO i=1,nl
      DO j=1,nl
         IF (i.GE.j) CYCLE
-        ! IF (DOT_PRODUCT(vel(1:2,i),vel(1:2,j)).LE.0) CYCLE
-        ! IF (DOT_PRODUCT(vel(1:2,i)-vel(1:2,j),pos(1:2,i)-pos(1:2,j)).GE.0) CYCLE
         x1 = pos(1,i)
         y1 = pos(2,i)
         x2 = pos(1,j)
@@ -60,7 +58,6 @@ SUBROUTINE PART1()
         intx(2) = -(x1*(y1+vy1)-y1*(x1+vx1)) * vy2 + vy1 * (x2*(y2+vy2)-y2*(x2+vx2))
         intx(2) = intx(2) / (vx1*vy2 - vy1*vx2)
 
-        ! print *, intx
         IF (ALL(INAREA(intx))) THEN
            IF (DOT_PRODUCT(intx-pos(1:2,i),vel(1:2,i)).LT.0) CYCLE
            IF (DOT_PRODUCT(intx-pos(1:2,j),vel(1:2,j)).LT.0) CYCLE
