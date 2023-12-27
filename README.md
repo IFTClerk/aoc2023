@@ -44,3 +44,4 @@ Here is my subjective view of the difficulty of each day's puzzle, which is addi
 | 22 | Jenga | *** |
 | 23 | Longest hiking path down some slippery slopes | ***** |
 | 24 | Intersecting lines | * |
+| 25 | Partitioning a graph | *** |
